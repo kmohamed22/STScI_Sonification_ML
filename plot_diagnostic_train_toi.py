@@ -16,4 +16,4 @@ def plot_diagnostic_train_toi(qlp_list, sim_times, sim_fluxes):
     :type: np.arrays
     """
 
-    pass
+    print("Hello world!")
