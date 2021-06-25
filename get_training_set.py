@@ -3,6 +3,8 @@ from create_sim_lc import create_sim_lc
 from get_qlp_lc import get_qlp_lc
 from plot_diagnostic_train_toi import plot_diagnostic_train_toi
 
+import pandas as pd
+
 def get_training_set():
     """
     Given a catalog of TOIs, it selects a subset based on selection criteria,
@@ -14,9 +16,26 @@ def get_training_set():
     Finally, it produces diagnostic plots of modelled and observed light curves
     of each TOI.
     """
+    # Asking user for TOI criteria/desired population of TOIs to subsample
+    toi_criteria = {'id': "", 'depth': 0.0, 'ecc': 0.0,
+                        'semimajor' : 0.0, 'long_peri' : 0.0,
+                        'inc_angle': 0.0, 'period': 0.0,
+                        'duration': 0.0, 'planet_r' : 0.0,
+                        'star_r' : 0.0}
+
+    toi_criteria['depth'] = input("Transit Depth Value: ")
+    toi_criteria['ecc'] = input("Eccentricity: ")
+    toi_criteria['semimajor'] = input("Semi-major Axis: ")
+    toi_criteria['long_peri'] = input("Longitude of Periastron: ")
+    toi_criteria['inc_angle'] = input("Inclination Angle: ")
+    toi_criteria['duration'] = input("Transit Duration Value: ")
+    toi_criteria['period'] = input("Orbital Period Value: ")
+    toi_criteria['planet_r'] = input("Planet Radius: ")
+    toi_criteria['star_r'] = input("Star Radius: ")
+    print(toi_criteria)
 
     # Define Training using TOI catalog, selecting a subsample
-    toi_training_systems = get_toi_training_set()
+    toi_training_systems = get_toi_training_set(toi_criteria)
 
     # Model transit using LC simulator given TOI tic ids
     # and orbital parameters

@@ -10,6 +10,8 @@ def get_qlp_lc(toi_id):
     :rtype: list
     """
 
+    # Susan Mullally vetting package to see if signal is from planet or not
+    # "is light change from target or background objects"
     qlp_list = []
 
     return qlp_list
