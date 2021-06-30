@@ -4,6 +4,8 @@ from get_qlp_lc import get_qlp_lc
 from plot_diagnostic_train_toi import plot_diagnostic_train_toi
 
 import pandas as pd
+import os.path
+import json
 
 def get_training_set():
     """
@@ -23,16 +25,37 @@ def get_training_set():
                         'duration': 0.0, 'planet_r' : 0.0,
                         'star_r' : 0.0}
 
-    toi_criteria['depth'] = input("Transit Depth Value: ")
-    toi_criteria['ecc'] = input("Eccentricity: ")
-    toi_criteria['semimajor'] = input("Semi-major Axis: ")
-    toi_criteria['long_peri'] = input("Longitude of Periastron: ")
-    toi_criteria['inc_angle'] = input("Inclination Angle: ")
-    toi_criteria['duration'] = input("Transit Duration Value: ")
-    toi_criteria['period'] = input("Orbital Period Value: ")
-    toi_criteria['planet_r'] = input("Planet Radius: ")
-    toi_criteria['star_r'] = input("Star Radius: ")
-    print(toi_criteria)
+    # Checking if previous selection criteria exist on disk
+    choice = input("y/n: Would you like to use the previous selection criteria?")
+    if os.path.isfile("toi_criteria.txt") and choice == y:
+        # read the previous parameters from txt file to toi_criteria into the txt
+        with open('toi_criteria.txt', 'r') as convert_file:
+            toi_criteria = json.load(convert_file)
+
+    # Otherwise creating the dictionary and saving it to disk
+    else:
+        print("There are no previously used selection criteria on disk.")
+        toi_criteria['id'] = input("Enter pre-selected/desired TOIs, if any:")
+        # Min, Max
+        print("Enter the minimum and maximum values desired for each parameter.")
+        print("The format is: (minimum value, maximum value)")
+        toi_criteria['depth'] = input("Transit Depth Value: ")
+        toi_criteria['ecc'] = input("Eccentricity: ")
+        toi_criteria['semimajor'] = input("Semi-major Axis: ")
+        toi_criteria['long_peri'] = input("Longitude of Periastron: ")
+        toi_criteria['inc_angle'] = input("Inclination Angle: ")
+        toi_criteria['duration'] = input("Transit Duration Value: ")
+        toi_criteria['period'] = input("Orbital Period Value: ")
+        toi_criteria['planet_r'] = input("Planet Radius: ")
+        toi_criteria['star_r'] = input("Star Radius: ")
+
+        with open('toi_criteria.txt', 'w') as convert_file:
+            convert_file.write(json.dumps(toi_criteria))
+
+    # Now converting the dictionary values into floats
+    for param in toi_criteria:
+        if param != 'id':
+            toi_criteria[param] = [float(val) for val in toi_criteria[param].split(', ')]
 
     # Define Training using TOI catalog, selecting a subsample
     toi_training_systems = get_toi_training_set(toi_criteria)
@@ -41,7 +64,8 @@ def get_training_set():
     # and orbital parameters
     all_sim_times, all_sim_fluxes = [], []
 
-    for toi in toi_training_systems:
+    # goes like: index, row in df.iterrows()
+    for index, toi in toi_training_systems.iterrows():
 
         # Creating simulated LCs given TESS exoplanet system
         (sim_times, sim_fluxes) = create_sim_lc(toi)

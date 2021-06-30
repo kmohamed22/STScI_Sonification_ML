@@ -9,19 +9,24 @@ def get_toi_training_set(toi_criteria):
     their TIC ID and orbital parameters.
     """
 
+    # Catalog of all TOIs which we will subsample into a training set
     training_set = pd.read_csv("tois.csv", skiprows = 4)
-    #print(training_set.columns)
-    # Getting Objects in interval ranges
-    # simple method, could use pd.IntervalIndex if want bounded between two values
-    # for now, let's try with just one parameter
-    training_set = training_set[training_set["Transit Depth Value"] <= toi_criteria["depth"]]
+    # test to make sure that the filtering is working correctly
+    #print(len(training_set['Star Radius Value']))
+
+    # Getting subset
+    # id's, ignoring for now as well as other parameters
+    # we don't have values for in this dataset
+    #training_set = training_set[training_set['Transit Depth Value'].between(toi_criteria['depth'][0], toi_criteria['depth'][1]]
     # ecc
     # semimajor
     # long_peri
-    # inclination angle
-    training_set = training_set[training_set["Orbital Period Value"] <= toi_criteria["period"]]
-    training_set = training_set[training_set["Transit Duration Value"] <= toi_criteria["duration"]]
-    training_set = training_set[training_set["Planet Radius Value"] <= toi_criteria["planet_r"]]
-    training_set = training_set[training_set["Star Radius Value"] <= toi_criteria["star_r"]]
+    # incl_angle
+    #training_set = training_set[training_set['Transit Duration Value'].between(toi_criteria['duration'][0], toi_criteria['duration'][1])]
+    #training_set = training_set[training_set['Orbital Period Value'].between(toi_criteria['period'][0], toi_criteria['period'][1])]
+    #training_set = training_set[training_set['Planet Radius Value'].between(toi_criteria['planet_r'][0], toi_criteria['planet_r'][1])]
+    training_set = training_set[training_set['Star Radius Value'].between(toi_criteria['star_r'][0], toi_criteria['star_r'][1])]
+
+    #print(len(training_set['Star Radius Value']))
 
     return training_set
